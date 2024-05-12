@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { League_Spartan } from "next/font/google";
 import "./globals.css";
-import GlobalContext from "./GlobalContext";
+import GlobalContextProvider from "./Context";
+
 
 const LSpartan = League_Spartan({
   subsets: ["latin"],
@@ -21,7 +22,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={LSpartan.className}>
-        <GlobalContext>{children}</GlobalContext>
+        <GlobalContextProvider>
+          {children}
+        </GlobalContextProvider>
+
+        {/* <GlobalContextProvider>{children}</GlobalContextProvider> */}
       </body>
     </html>
   );
