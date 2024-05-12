@@ -534,7 +534,7 @@ const Details = ({ params }: ParamsPropsType) => {
                 </div>
 
                 {paramsData[0].items?.map((item, i) => (
-                  <div className="w-full flex flex-row  md:flex items-center ">
+                  <div key={i} className="w-full flex flex-row  md:flex items-center ">
                     <div className="w-full flex-col flex md:flex-row md:items-center justify-between  md:w-[75%]">
                       <p className="font-bold text-[15px] leading-[1.33] tracking-[-0.25px] text-black md:w-[64%]">
                         {item.name}
