@@ -144,9 +144,8 @@ export default function GlobalContextProvider({
   const [markAsPaid, setMarkAsPaid] = useState(false);
   const [error, setError] = useState(false);
   const [deleteSectionOverlay, setDeleteSectionOverlay] = useState(false);
-  // const [editInvoice, setEditInvoice] = useState(false);
   const [editParams, setEditParams] = useState("");
-  console.log(editParams, 'editParams');
+  // console.log(editParams, 'editParams');
   // console.log(data, "data afret deleta");
 
   // const [paymentTerms, setPaymentTerms] = useState(30);

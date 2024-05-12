@@ -4,7 +4,7 @@ import React from 'react'
 
 export type ParamsPropsType = {
   params: {
-    id: string;
+    id: string ;
   }
 }
 

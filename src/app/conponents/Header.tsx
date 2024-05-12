@@ -8,6 +8,7 @@ const Header = () => {
   const context = useContext(GlobalContext)
   if(!context) return null
   const { isDesktop, newInvoicePage, editParams } = context;
+  console.log(editParams,   'editParams')
 
   return (
     <>
@@ -45,7 +46,7 @@ const Header = () => {
 
       {newInvoicePage &&  <Form />}
       {editParams && (
-        <Form />
+        <Form params={editParams} />
       )}
 
 

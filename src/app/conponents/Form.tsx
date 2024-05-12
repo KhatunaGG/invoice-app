@@ -2,8 +2,13 @@
 import React, { useContext } from "react";
 import { DataType, GlobalContext } from "../Context";
 import { Span } from "next/dist/trace";
+import { ParamsPropsType } from "../pages/[id]/page";
 
-const Form = () => {
+type FormPropsType = {
+  params?: string;
+}
+
+const Form = ({params}: FormPropsType) => {
   const context = useContext(GlobalContext);
   if (!context) return null;
   const {
@@ -28,9 +33,7 @@ const Form = () => {
     setTotalPrice,
     randomID,
     setData,
-
     addNewInvoice,
-
     createdAt,
     projectDesc,
     clientName,
@@ -44,14 +47,8 @@ const Form = () => {
     itemName,
     itemPrice,
     itemQty,
-
-    // setStatusOnBtnClick,
-    // statusOnBtnClick,
     newInvoiceItem,
-    // updateInvoiceStatus,
     setNewInvoiceItem,
-
-    // createNewInvoisObj,
     setNewInvoicePage,
     setError,
     error,
