@@ -67,10 +67,13 @@ export type GlobalContextType = {
   paymentTerms: number;
   paymentDue: string;
 
-
   deleteDataItems: (value: string) => void;
-  setDeleteSectionOverlay:  React.Dispatch<React.SetStateAction<boolean>>;
+  setDeleteSectionOverlay: React.Dispatch<React.SetStateAction<boolean>>;
   deleteSectionOverlay: boolean;
+  editDataItems: (value: string) => void;
+  // setEditInvoice: React.Dispatch<React.SetStateAction<boolean>>;
+  // editInvoice: boolean;
+  editParams: string;
 };
 
 export type DataType = {
@@ -140,9 +143,11 @@ export default function GlobalContextProvider({
   const [totalPrice, setTotalPrice] = useState(0);
   const [markAsPaid, setMarkAsPaid] = useState(false);
   const [error, setError] = useState(false);
-  const [deleteSectionOverlay, setDeleteSectionOverlay] = useState(false)
-
-  console.log(data, 'data afret deleta')
+  const [deleteSectionOverlay, setDeleteSectionOverlay] = useState(false);
+  // const [editInvoice, setEditInvoice] = useState(false);
+  const [editParams, setEditParams] = useState("");
+  console.log(editParams, 'editParams');
+  // console.log(data, "data afret deleta");
 
   // const [paymentTerms, setPaymentTerms] = useState(30);
   // const [paymentDue, setPaymentDue] = useState("");
@@ -152,23 +157,16 @@ export default function GlobalContextProvider({
   // };
 
   const [paymentTerms, setPaymentTerms] = useState(30);
-  const [paymentDue, setPaymentDue] = useState('');
-  console.log(paymentDue)
+  const [paymentDue, setPaymentDue] = useState("");
+  console.log(paymentDue);
   const calculatePaymentTerms = (createdAt: string, paymentDays: number) => {
-    setPaymentTerms(paymentDays)
+    setPaymentTerms(paymentDays);
     const createdDate = new Date(createdAt);
     const dueDate = new Date(createdDate);
     dueDate.setDate(dueDate.getDate() + paymentDays);
-    const formattedDueDate = dueDate.toISOString().split('T')[0];
+    const formattedDueDate = dueDate.toISOString().split("T")[0];
     setPaymentDue(formattedDueDate);
-  }
-
-
-
-
-
-
-
+  };
 
   let newData: DataType[];
   const handleCheckBox = (checkName: string) => {
@@ -208,20 +206,23 @@ export default function GlobalContextProvider({
     total: 0,
   });
 
-
   const addNewInvoice = (newInvoiceObj: DataType) => {
     const newDataObj = newInvoiceObj;
     setData([...data, newDataObj]);
   };
 
-
-
   const deleteDataItems = (itemId: string) => {
-    console.log(itemId, '>>>itemId')
-    const deleteById = data.filter(item => item.id !== itemId)
-    setData([...deleteById])
+    console.log(itemId, ">>>itemId");
+    const deleteById = data.filter((item) => item.id !== itemId);
+    setData(deleteById);
+    setLength(deleteById.length);
+  };
 
-  }
+  const editDataItems = (itemId: string) => {
+    setEditParams(itemId);
+    
+  };
+
 
 
 
@@ -334,10 +335,13 @@ export default function GlobalContextProvider({
         paymentTerms,
         paymentDue,
 
-
         deleteDataItems,
         setDeleteSectionOverlay,
-        deleteSectionOverlay
+        deleteSectionOverlay,
+        editDataItems,
+        // setEditInvoice,
+        // editInvoice,
+        editParams
       }}
     >
       <div

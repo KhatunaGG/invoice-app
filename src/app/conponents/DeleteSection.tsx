@@ -37,7 +37,7 @@ const DeleteSection = ({ params }: ParamsPropsType) => {
                 </button>
                 <Link href={'/pages/Empty'}>
                   <button
-                    // onClick={() => deleteDataItems(params.id)}
+                    onClick={() => deleteDataItems(params.id)}
                     // onClick={() => setData(data.filter(item => item.id !== params.id))}
                     className="bg-[#EC5757] pt-[18px] pb-[15px] px-[24.5px] rounded-[50px] text-white font-bold text-[15px] leading-[1] tracking-[-0.25px]"
                   >

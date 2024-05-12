@@ -60,7 +60,8 @@ const Form = () => {
 
     calculatePaymentTerms,
     paymentTerms,
-    paymentDue
+    paymentDue,
+    editParams
   } = context;
 
  
@@ -70,7 +71,7 @@ const Form = () => {
   console.log(itemName, 'itemName')
 
   return (
-    <div className="bg-[#00000049] min-h-[2147px] w-full absolute top-0  z-10  flex flex-row md:min-h-[1470px] lg:min-h-[1424px] ">
+    <div className="bg-[#00000049] min-h-[1920px] w-full absolute top-0  z-10  flex flex-row md:min-h-[1460px] lg:min-h-[1390px] ">
       <div className="w-full h-full bg-white  md:rounded-tr-[20px] md:w-[80.20%] lg:w-[49.93%] lg:rounded-tr-[20px] md:rounded-br-[20px] lg:rounded-br-[20px] flex flex-col gap-6 md:gap-[47px] ">
         <div className="left w-full  px-6  pt-[113px]  md:pt-[139px]  lg:pl-[159px] lg:pt-[59px] md:px-[7.78%] lg:px-[7.78%] ">
           <div className="w-full flex flex-row gap-[23.66px] items-center md:hidden lg:hidden mb-[26px]">
@@ -82,14 +83,14 @@ const Form = () => {
             <p className="font-bold">Go back</p>
           </div>
 
-          {!newInvoicePage ? (
-            <p className="font-bold text-[24px] leading-[1] tracking-[-0.5px] text-black md:mb-0 lg:mb-0 mb-[22px] lg:hidden">
+          {editParams !== '' ? (
+            <p className="font-bold text-[24px] leading-[1] tracking-[-0.5px] text-black md:mb-[46px] lg:mb-[46px] mb-[22px]">
               Edit
               <span className="text-[#7E88C3] font-bold text-[24px] leading-[1] tracking-[-0.5px] ">
                 {" "}
-                #
+                #{editParams}
               </span>
-              RT3080
+              
             </p>
           ) : (
             <p className="font-bold text-[24px] leading-[1] tracking-[-0.5px] text-black md:mb-[46px] lg:mb-[46px] mb-[22px] ">

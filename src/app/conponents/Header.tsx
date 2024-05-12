@@ -7,7 +7,7 @@ import { GlobalContext } from "../Context";
 const Header = () => {
   const context = useContext(GlobalContext)
   if(!context) return null
-  const { isDesktop, newInvoicePage } = context;
+  const { isDesktop, newInvoicePage, editParams } = context;
 
   return (
     <>
@@ -44,9 +44,15 @@ const Header = () => {
       </div>
 
       {newInvoicePage &&  <Form />}
+      {editParams && (
+        <Form />
+      )}
+
+
+
+
 
       {/* <Form /> */}
-
       {/* <DeleteSection /> */}
 
    
