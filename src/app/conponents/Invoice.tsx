@@ -127,7 +127,7 @@ const Invoice = () => {
   return (
     <div className="w-full h-full flex flex-col  gap-y-4 md:mb-8 ">
       {data.map((item, i) => (
-        <Link href={`/pages/${item.id}`}>
+        <Link href={`/pages/${item.id}`} key={i}>
           <div
 
 
@@ -135,7 +135,7 @@ const Invoice = () => {
 
 
 
-            key={i}
+            
             className="w-full py-[25px] flex flex-row items-center bg-white rounded-[8px] px-8 md:py-4 lg:py-4 shadow-lg"
           >
             <div className="w-[50%] md:w-[10%] lg:w-[10%] flex flex-col justify-between">
