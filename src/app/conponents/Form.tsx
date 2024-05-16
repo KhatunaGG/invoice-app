@@ -1,19 +1,22 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { DataType, GlobalContext } from "../Context";
 import { Span } from "next/dist/trace";
 import { ParamsPropsType } from "../pages/[id]/page";
+import ItemList from "./ItemList";
+// import ItemList from "./ItemList";
 
 type FormPropsType = {
   params?: string;
-}
+};
 
-const Form = ({params}: FormPropsType) => {
+const Form = ({ params }: FormPropsType) => {
   const context = useContext(GlobalContext);
   if (!context) return null;
+
+  console.log(params, "FORMparams?");
   const {
     newInvoicePage,
-    // addNewInvoice,
     setClientName,
     setClientEmail,
     setClientStreet,
@@ -53,19 +56,25 @@ const Form = ({params}: FormPropsType) => {
     setError,
     error,
 
-
-
     calculatePaymentTerms,
     paymentTerms,
     paymentDue,
-    editParams
+    editParams,
+    data,
+    addNewListItem,
+    addNewItem,
+    getEditParams,
+    newListItem,
+
+    newListItemArray,
+    setAddNewItem,
   } = context;
 
- 
+  const editData = data.find((item) => item.id === editParams);
+  // console.log(editData?.items, "editData");
 
-  // console.log(randomID);
-  console.log(itemPrice, 'itemprice')
-  console.log(itemName, 'itemName')
+  // const singleItem = editData?.items;
+  // console.log(singleItem?.length, "singleItem");
 
   return (
     <div className="bg-[#00000049] min-h-[1920px] w-full absolute top-0  z-10  flex flex-row md:min-h-[1460px] lg:min-h-[1390px] ">
@@ -80,14 +89,13 @@ const Form = ({params}: FormPropsType) => {
             <p className="font-bold">Go back</p>
           </div>
 
-          {editParams !== '' ? (
+          {editParams !== "" ? (
             <p className="font-bold text-[24px] leading-[1] tracking-[-0.5px] text-black md:mb-[46px] lg:mb-[46px] mb-[22px]">
               Edit
               <span className="text-[#7E88C3] font-bold text-[24px] leading-[1] tracking-[-0.5px] ">
                 {" "}
                 #{editParams}
               </span>
-              
             </p>
           ) : (
             <p className="font-bold text-[24px] leading-[1] tracking-[-0.5px] text-black md:mb-[46px] lg:mb-[46px] mb-[22px] ">
@@ -113,7 +121,6 @@ const Form = ({params}: FormPropsType) => {
                 type="text"
                 placeholder=""
               />
-              
             </div>
 
             <div className="w-full flex flex-col  md:flex-row  gap-[42px] lg:gap-[40px]">
@@ -182,9 +189,16 @@ const Form = ({params}: FormPropsType) => {
                 onChange={(e) => setClientName(e.target.value)}
                 className="border border-[#DFE3FA] rounded-[4px] pl-[20px] pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000]  outline-none"
                 type="text"
+                defaultValue={editParams ? editData?.clientName : ""}
                 placeholder=""
               />
-              {error && clientName.length === 0 ? <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">Please fill all required fields</span> : ''}
+              {error && clientName.length === 0 ? (
+                <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">
+                  Please fill all required fields
+                </span>
+              ) : (
+                ""
+              )}
             </div>
             <div className="relative Street-address flex flex-col gap-[9px]">
               <label
@@ -197,9 +211,16 @@ const Form = ({params}: FormPropsType) => {
                 onChange={(e) => setClientEmail(e.target.value)}
                 className="border border-[#DFE3FA] rounded-[4px] pl-[20px] pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000]  outline-none"
                 type="text"
+                defaultValue={editParams ? editData?.clientEmail : ""}
                 placeholder=""
               />
-              {error && clientEmail.length === 0 ? <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">Please fill all required fields</span> : ''}
+              {error && clientEmail.length === 0 ? (
+                <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">
+                  Please fill all required fields
+                </span>
+              ) : (
+                ""
+              )}
             </div>
 
             <div className="relative Street-address flex flex-col gap-[9px]">
@@ -213,9 +234,16 @@ const Form = ({params}: FormPropsType) => {
                 onChange={(e) => setClientStreet(e.target.value)}
                 className="border border-[#DFE3FA] rounded-[4px] pl-[20px] pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000]  outline-none"
                 type="text"
+                defaultValue={editParams ? editData?.clientAddress.street : ""}
                 placeholder=""
               />
-              {error && clientStreet.length === 0 ? <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">Please fill all required fields</span> : ''}
+              {error && clientStreet.length === 0 ? (
+                <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">
+                  Please fill all required fields
+                </span>
+              ) : (
+                ""
+              )}
             </div>
 
             <div className="w-full flex flex-col  md:flex-row  gap-[42px] lg:gap-[40px]">
@@ -231,9 +259,18 @@ const Form = ({params}: FormPropsType) => {
                     onChange={(e) => setClientCity(e.target.value)}
                     className="border border-[#DFE3FA] rounded-[4px] pl-[20px] pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000]  outline-none"
                     type="text"
+                    defaultValue={
+                      editParams ? editData?.clientAddress.city : ""
+                    }
                     placeholder=""
                   />
-                  {error && clientCity.length === 0 ? <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">Please fill all required fields</span> : ''}
+                  {error && clientCity.length === 0 ? (
+                    <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">
+                      Please fill all required fields
+                    </span>
+                  ) : (
+                    ""
+                  )}
                 </div>
 
                 <div className="relative Post-code flex flex-col gap-[9px] w-[46.21%] md:w-[49.21%] ">
@@ -247,9 +284,18 @@ const Form = ({params}: FormPropsType) => {
                     onChange={(e) => setClientPostCode(e.target.value)}
                     className="border border-[#DFE3FA] rounded-[4px] pl-[20px] pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000] outline-none"
                     type="text"
+                    defaultValue={
+                      editParams ? editData?.clientAddress.postCode : ""
+                    }
                     placeholder=""
                   />
-                  {error && clientPostCode.length === 0 ? <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">Please fill all required fields</span> : ''}
+                  {error && clientPostCode.length === 0 ? (
+                    <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">
+                      Please fill all required fields
+                    </span>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
 
@@ -264,9 +310,18 @@ const Form = ({params}: FormPropsType) => {
                   onChange={(e) => setClientCountry(e.target.value)}
                   className="border border-[#DFE3FA] rounded-[4px] pl-[20px] pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000] outline-none"
                   type="text"
+                  defaultValue={
+                    editParams ? editData?.clientAddress.country : ""
+                  }
                   placeholder=""
                 />
-                {error && clientCountry.length === 0 ? <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">Please fill all required fields</span> : ''}
+                {error && clientCountry.length === 0 ? (
+                  <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">
+                    Please fill all required fields
+                  </span>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </section>
@@ -284,9 +339,16 @@ const Form = ({params}: FormPropsType) => {
                   onChange={(e) => setCreatedAt(e.target.value)}
                   className="border border-[#DFE3FA] rounded-[4px] pl-[20px] pt-[18px] pb-[15px] pr-4 font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000] outline-none"
                   type="date"
+                  defaultValue={editParams ? editData?.createdAt : ""}
                   placeholder=""
                 />
-                {error && createdAt.length === 0 ? <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">Please fill all required fields</span> : ''}
+                {error && createdAt.length === 0 ? (
+                  <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">
+                    Please fill all required fields
+                  </span>
+                ) : (
+                  ""
+                )}
               </div>
 
               <div className="w-full flex flex-col gap-[9px]  md:w-[47.61%] relative ">
@@ -310,7 +372,7 @@ const Form = ({params}: FormPropsType) => {
                       onClick={() => {
                         setHandlePaymentTerm("Net 1 Day");
                         setPaymentTermsDropDown(!paymentTermsDropDown);
-                        calculatePaymentTerms(createdAt,  1)
+                        calculatePaymentTerms(createdAt, 1);
                       }}
                       // defaultValue={1}
                       className="border border-b-[#e0e1e5] py-[15px] pl-6"
@@ -321,7 +383,7 @@ const Form = ({params}: FormPropsType) => {
                       onClick={() => {
                         setHandlePaymentTerm("Net 14 Days");
                         setPaymentTermsDropDown(!paymentTermsDropDown);
-                        calculatePaymentTerms(createdAt,  14)
+                        calculatePaymentTerms(createdAt, 14);
                       }}
                       // defaultValue={14}
                       className="border border-b-[#e0e1e5] py-[15px] pl-6"
@@ -332,7 +394,7 @@ const Form = ({params}: FormPropsType) => {
                       onClick={() => {
                         setHandlePaymentTerm("Net 30 Days");
                         setPaymentTermsDropDown(!paymentTermsDropDown);
-                        calculatePaymentTerms(createdAt,  30)
+                        calculatePaymentTerms(createdAt, 30);
                       }}
                       // defaultValue={30}
                       className="border border-b-[#e0e1e5] py-[15px] pl-6"
@@ -343,7 +405,7 @@ const Form = ({params}: FormPropsType) => {
                       onClick={() => {
                         setHandlePaymentTerm("Net 7 Days");
                         setPaymentTermsDropDown(!paymentTermsDropDown);
-                        calculatePaymentTerms(createdAt,  7)
+                        calculatePaymentTerms(createdAt, 7);
                       }}
                       // defaultValue={7}
                       className="border border-b-[#e0e1e5] py-[15px] pl-6"
@@ -353,7 +415,13 @@ const Form = ({params}: FormPropsType) => {
                   </div>
                 )}
 
-              {error && paymentTermsDropDown ? <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">Please fill all required fields</span> : ''}
+                {error && paymentTermsDropDown ? (
+                  <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">
+                    Please fill all required fields
+                  </span>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
 
@@ -368,9 +436,16 @@ const Form = ({params}: FormPropsType) => {
                 onChange={(e) => setProjectDesc(e.target.value)}
                 className="border border-[#DFE3FA] rounded-[4px] pl-[20px] pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000] outline-none"
                 type="text"
+                defaultValue={editParams ? editData?.description : ""}
                 placeholder=""
               />
-              {error && projectDesc.length === 0 ? <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">Please fill all required fields</span> : ''}
+              {error && projectDesc.length === 0 ? (
+                <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">
+                  Please fill all required fields
+                </span>
+              ) : (
+                ""
+              )}
               {/* <div className='border border-[#DFE3FA] rounded-[4px] pl-[20px] pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000] h-[52px]'>Graphic Design</div> */}
             </div>
           </section>
@@ -380,7 +455,9 @@ const Form = ({params}: FormPropsType) => {
               Item List
             </h3>
 
-            <div className="w-full flex flex-col items-center md:flex-row  gap-2 mb-[49px]">
+            {/* {!editParams && addNewItem === true && <ItemList />} */}
+
+            {/* <div className="w-full flex flex-col items-center md:flex-row  gap-2 mb-[49px]">
               <div className="relative w-full flex flex-col gap-y-[15px]       md:w-[41%]">
                 <label
                   className="font-medium text-[13px] leading-[1.15] traking-[-0.1px] text-[#7E88C3]"
@@ -392,7 +469,13 @@ const Form = ({params}: FormPropsType) => {
                   onChange={(e) => setItemName(e.target.value)}
                   className="border border-[#DFE3FA] rounded-[4px] pl-[20px] pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000] h-[52px] outline-none"
                 />
-                {error && itemName.length === 0 ? <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">Please fill all required fields</span> : ''}
+                {error && itemName.length === 0 ? (
+                  <span className="text-red-600 text-[10px] absolute left-1 bottom-[-19px]">
+                    Please fill all required fields
+                  </span>
+                ) : (
+                  ""
+                )}
               </div>
 
               <div className=" w-full flex flex-row items-center gap-2     md:w-[59%]">
@@ -406,10 +489,11 @@ const Form = ({params}: FormPropsType) => {
                     </label>
                     <input
                       onChange={(e) => setItemQty(Number(e.target.value))}
-                      style={{border: error && itemQty === 0  ? '1px solid red' : ''}}
+                      style={{
+                        border: error && itemQty === 0 ? "1px solid red" : "",
+                      }}
                       className=" border border-[#DFE3FA] rounded-[4px] text-right pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000] h-[52px] outline-none"
                     />
-                    
                   </div>
 
                   <div className="w-[30.58%] flex flex-col gap-y-[15px]   md:w-[31%]">
@@ -421,7 +505,9 @@ const Form = ({params}: FormPropsType) => {
                     </label>
                     <input
                       onChange={(e) => setItemPrice(Number(e.target.value))}
-                      style={{border: error && itemPrice === 0 ? '1px solid red' : ''}}
+                      style={{
+                        border: error && itemPrice === 0 ? "1px solid red" : "",
+                      }}
                       className=" border border-[#DFE3FA] rounded-[4px] text-right pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000] h-[52px]  outline-none"
                     />
                   </div>
@@ -436,7 +522,10 @@ const Form = ({params}: FormPropsType) => {
                     <input
                       // onChange={(e) => setTotalPrice(Number(e.target.value))}
                       onChange={() => setTotalPrice(itemQty * itemPrice)}
-                      style={{border: error && totalPrice === 0 ? '1px solid red' : ''}}
+                      style={{
+                        border:
+                          error && totalPrice === 0 ? "1px solid red" : "",
+                      }}
                       className="border border-[#DFE3FA] rounded-[4px] text-right pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000] h-[52px] outline-none"
                     />
                   </div>
@@ -450,10 +539,36 @@ const Form = ({params}: FormPropsType) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </section>
 
-          <button className="w-full pt-[18px] pb-[15px] bg-[#F9FAFE] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#7E88C3] rounded-[24px] transition duration-300 hover:bg-[#DFE3FA]">
+          {/* {!editParams && addNewItem === true && newListItemArray
+            ? newListItemArray.map((el, i) => <ItemList key={i}  /> )
+            : editData?.items?.map((el, i) => <ItemList key={i} el={el} />)} */}
+
+          {!editParams && <ItemList />}
+
+          {!editParams && addNewItem === true && newListItemArray
+            ? newListItemArray.map((el, i) => <ItemList key={i} />)
+            : editData?.items?.map((el, i) => (
+                <ItemList key={i} el={el} index={i} />
+              ))}
+
+          <button
+            onClick={() => {
+              setAddNewItem(true);
+              if (itemName && itemQty && itemPrice && totalPrice) {
+                const newItem = {
+                  name: itemName,
+                  quantity: itemQty,
+                  price: itemPrice,
+                  total: totalPrice,
+                };
+                addNewListItem(newItem);
+              }
+            }}
+            className="w-full pt-[18px] pb-[15px] bg-[#F9FAFE] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#7E88C3] rounded-[24px] transition duration-300 hover:bg-[#DFE3FA]"
+          >
             + Add New Item
           </button>
         </div>
@@ -463,71 +578,17 @@ const Form = ({params}: FormPropsType) => {
 
           <div className="w-full flex flex-row items-center gap-2 md:justify-between px-6 bg-white py-6  md:px-0 lg:pb-8 md:pt-0 lg:pt-0 ">
             <button
-            onClick={() => setNewInvoicePage(!newInvoicePage)}
-            className="bg-[#F9FAFE] pt-[18px] pb-[15px] px-[23.5px] rounded-[50px] text-[#7E88C3] font-bold text-[15px] leading-[1] tracking-[-0.25px]">
-              Discard
+              onClick={() => setNewInvoicePage(!newInvoicePage)}
+              className="bg-[#F9FAFE] pt-[18px] pb-[15px] px-[23.5px] rounded-[50px] text-[#7E88C3] font-bold text-[15px] leading-[1] tracking-[-0.25px]"
+            >
+              {editParams ? "Cancel" : "Discard"}
             </button>
 
             <div className="flex items-center flex-row gap-2 ">
-              <button
-                onClick={() => {
-                  let newInvoiceObj: DataType = {
-                    id: randomID,
-                    createdAt: createdAt,
-                    paymentDue: paymentDue,
-                    description: projectDesc,
-                    paymentTerms: paymentTerms,
-                    clientName: clientName,
-                    clientEmail: clientEmail,
-                    status: "draft",
-                    senderAddress: {
-                      street: "19 Union Terrace",
-                      city: "London",
-                      postCode: "E1 3EZ",
-                      country: "United Kingdom",
-                    },
-                    clientAddress: {
-                      street: clientStreet,
-                      city: clientCity,
-                      postCode: clientPostCode,
-                      country: clientCountry,
-                    },
-                    items: [
-                      {
-                        name: itemName,
-                        quantity: itemQty,
-                        price: itemPrice,
-                        total: itemQty * itemPrice,
-                      },
-                    ],
-                    total: totalPrice,
-                  };
-                  addNewInvoice(newInvoiceObj);
-                  setNewInvoicePage(!newInvoicePage);
-                }}
-                className="bg-[#000000] pt-[18px] pb-[15px] px-[14.5px] md:px-[23.5px] rounded-[50px] text-[#7E88C3] font-bold text-[15px] leading-[1] tracking-[-0.25px] whitespace-nowrap "
-              >
-                Save as Draft
-              </button>
-
-              <button
-                onClick={() => {
-                  if (
-                    createdAt &&
-                    handlePaymentTerm &&
-                    projectDesc &&
-                    clientName &&
-                    clientEmail &&
-                    clientStreet &&
-                    clientCity &&
-                    clientPostCode &&
-                    clientCountry &&
-                    itemName &&
-                    itemQty &&
-                    itemPrice &&
-                    totalPrice
-                  ) {
-                    let newInvoiceObj = {
+              {!editParams && (
+                <button
+                  onClick={() => {
+                    let newInvoiceObj: DataType = {
                       id: randomID,
                       createdAt: createdAt,
                       paymentDue: paymentDue,
@@ -535,7 +596,7 @@ const Form = ({params}: FormPropsType) => {
                       paymentTerms: paymentTerms,
                       clientName: clientName,
                       clientEmail: clientEmail,
-                      status: "pending",
+                      status: "draft",
                       senderAddress: {
                         street: "19 Union Terrace",
                         city: "London",
@@ -560,16 +621,177 @@ const Form = ({params}: FormPropsType) => {
                     };
                     addNewInvoice(newInvoiceObj);
                     setNewInvoicePage(!newInvoicePage);
-                  } else {
-                    setError(!error)
+                  }}
+                  className="bg-[#000000] pt-[18px] pb-[15px] px-[14.5px] md:px-[23.5px] rounded-[50px] text-[#7E88C3] font-bold text-[15px] leading-[1] tracking-[-0.25px] whitespace-nowrap "
+                >
+                  Save as Draft
+                </button>
+              )}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              {/* <button
+                onClick={() => {
+                  if (
+                    createdAt &&
+                    handlePaymentTerm &&
+                    projectDesc &&
+                    clientName &&
+                    clientEmail &&
+                    clientStreet &&
+                    clientCity &&
+                    clientPostCode &&
+                    clientCountry &&
+                    itemName &&
+                    itemQty &&
+                    itemPrice &&
+                    totalPrice
+                  ) {
+                    const newItemInInvoiceObj = {
+                      name: itemName,
+                      quantity: itemQty,
+                      price: itemPrice,
+                      total: itemQty * itemPrice,
+                    };
+                    let newInvoiceObj = {
+                      id: randomID,
+                      createdAt: createdAt,
+                      paymentDue: paymentDue,
+                      description: projectDesc,
+                      paymentTerms: paymentTerms,
+                      clientName: clientName,
+                      clientEmail: clientEmail,
+                      status: "pending",
+                      senderAddress: {
+                        street: "19 Union Terrace",
+                        city: "London",
+                        postCode: "E1 3EZ",
+                        country: "United Kingdom",
+                      },
+                      clientAddress: {
+                        street: clientStreet,
+                        city: clientCity,
+                        postCode: clientPostCode,
+                        country: clientCountry,
+                      },
+                      // items: [{ ...newListItem }, newItemInInvoiceObj],
+                      items: [...newListItemArray, newItemInInvoiceObj],
+                      total: totalPrice,
+                    };
+                    addNewInvoice(newInvoiceObj);
+                    setNewInvoicePage(!newInvoicePage);
+                    setAddNewItem(false);
+                  } else {
+                    setError(!error);
                   }
-                  // setNewInvoicePage(!newInvoicePage);
                 }}
                 className="bg-[#7C5DFA] pt-[18px] pb-[15px] px-[14.5px] md:px-[23.5px] rounded-[50px] text-white font-bold text-[15px] leading-[1] tracking-[-0.25px] whitespace-nowrap "
               >
-                Save & Send
+                {editParams ? "Save Changes" : "Save & Send"}
+              </button> */}
+
+              {!editParams ? (
+                <button
+                onClick={() => {
+                  if (
+                    createdAt &&
+                    handlePaymentTerm &&
+                    projectDesc &&
+                    clientName &&
+                    clientEmail &&
+                    clientStreet &&
+                    clientCity &&
+                    clientPostCode &&
+                    clientCountry &&
+                    itemName &&
+                    itemQty &&
+                    itemPrice &&
+                    totalPrice
+                  ) {
+                    const newItemInInvoiceObj = {
+                      name: itemName,
+                      quantity: itemQty,
+                      price: itemPrice,
+                      total: itemQty * itemPrice,
+                    };
+                    let newInvoiceObj = {
+                      id: randomID,
+                      createdAt: createdAt,
+                      paymentDue: paymentDue,
+                      description: projectDesc,
+                      paymentTerms: paymentTerms,
+                      clientName: clientName,
+                      clientEmail: clientEmail,
+                      status: "pending",
+                      senderAddress: {
+                        street: "19 Union Terrace",
+                        city: "London",
+                        postCode: "E1 3EZ",
+                        country: "United Kingdom",
+                      },
+                      clientAddress: {
+                        street: clientStreet,
+                        city: clientCity,
+                        postCode: clientPostCode,
+                        country: clientCountry,
+                      },
+                      // items: [{ ...newListItem }, newItemInInvoiceObj],
+                      items: [...newListItemArray, newItemInInvoiceObj],
+                      total: totalPrice,
+                    };
+                    addNewInvoice(newInvoiceObj);
+                    setNewInvoicePage(!newInvoicePage);
+                    setAddNewItem(false);
+                  } else {
+                    setError(!error);
+                  }
+                }}
+                className="bg-[#7C5DFA] pt-[18px] pb-[15px] px-[14.5px] md:px-[23.5px] rounded-[50px] text-white font-bold text-[15px] leading-[1] tracking-[-0.25px] whitespace-nowrap "
+              >
+                {editParams ? "Save Changes" : "Save & Send"}
               </button>
+              ) : (
+
+                <button
+                onClick={() => {
+                  setNewInvoicePage(!newInvoicePage);
+                  setError(error)
+                }}
+                className="bg-[#7C5DFA] pt-[18px] pb-[15px] px-[14.5px] md:px-[23.5px] rounded-[50px] text-white font-bold text-[15px] leading-[1] tracking-[-0.25px] whitespace-nowrap ">Save Changes</button>
+              )}
+
+            
+           
+
+
+
+              
             </div>
           </div>
         </footer>

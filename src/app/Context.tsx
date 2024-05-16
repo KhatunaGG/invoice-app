@@ -3,6 +3,15 @@ import React, { ReactNode, createContext, useEffect, useState } from "react";
 import datajson from "./data.json";
 import Header from "./conponents/Header";
 
+export type ListItemType = {
+  name?: string;
+  quantity?: number;
+  price?: number;
+  total?: number;
+};
+
+
+
 export type GlobalContextType = {
   isDesktop: boolean;
   isTablet: boolean;
@@ -66,14 +75,21 @@ export type GlobalContextType = {
   calculatePaymentTerms: (createdAt: string, paymentDays: number) => void;
   paymentTerms: number;
   paymentDue: string;
-
   deleteDataItems: (value: string) => void;
   setDeleteSectionOverlay: React.Dispatch<React.SetStateAction<boolean>>;
   deleteSectionOverlay: boolean;
-  editDataItems: (value: string) => void;
-  // setEditInvoice: React.Dispatch<React.SetStateAction<boolean>>;
-  // editInvoice: boolean;
   editParams: string;
+  setEditParams: React.Dispatch<React.SetStateAction<string>>;
+  addNewItem: boolean;
+  getEditParams: (value: string) => void;
+
+  addNewListItem: (newItem: ListItemType) => void;
+  newListItem: ListItemType;
+
+  newListItemArray: ListItemType[];
+
+  setAddNewItem: React.Dispatch<React.SetStateAction<boolean>>;
+  deleteItemsFromItemList: (value: string, index: number) => void;
 };
 
 export type DataType = {
@@ -106,6 +122,33 @@ export type DataType = {
 
   total: number;
 };
+
+
+
+// export type DataType = {
+//   id: string;
+//   createdAt: string;
+//   paymentDue: string;
+//   description: string;
+//   paymentTerms: number;
+//   clientName: string;
+//   clientEmail: string;
+//   status: string;
+//   senderAddress: {
+//     street: string;
+//     city: string;
+//     postCode: string;
+//     country: string;
+//   };
+//   clientAddress: {
+//     street: string;
+//     city: string;
+//     postCode: string;
+//     country: string;
+//   };
+//   items?: ListItemType[]; 
+//   total: number;
+// };
 
 export const GlobalContext = createContext<GlobalContextType | null>(null);
 
@@ -142,44 +185,12 @@ export default function GlobalContextProvider({
   const [total, setTotal] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [markAsPaid, setMarkAsPaid] = useState(false);
+  const [paymentTerms, setPaymentTerms] = useState(30);
+  const [paymentDue, setPaymentDue] = useState("");
   const [error, setError] = useState(false);
   const [deleteSectionOverlay, setDeleteSectionOverlay] = useState(false);
   const [editParams, setEditParams] = useState("");
-  // console.log(editParams, 'editParams');
-  // console.log(data, "data afret deleta");
-
-  // const [paymentTerms, setPaymentTerms] = useState(30);
-  // const [paymentDue, setPaymentDue] = useState("");
-
-  // const calculatePaymentTerms = (created: string, dueDay: number) => {
-  //   setPaymentTerms(dueDay);
-  // };
-
-  const [paymentTerms, setPaymentTerms] = useState(30);
-  const [paymentDue, setPaymentDue] = useState("");
-  console.log(paymentDue);
-  const calculatePaymentTerms = (createdAt: string, paymentDays: number) => {
-    setPaymentTerms(paymentDays);
-    const createdDate = new Date(createdAt);
-    const dueDate = new Date(createdDate);
-    dueDate.setDate(dueDate.getDate() + paymentDays);
-    const formattedDueDate = dueDate.toISOString().split("T")[0];
-    setPaymentDue(formattedDueDate);
-  };
-
-  let newData: DataType[];
-  const handleCheckBox = (checkName: string) => {
-    if (isChecked !== false) {
-      newData = datajson.filter((item) => item.status === `${checkName}`);
-      setData(newData);
-      setStatusDropdown(!statusDropdown);
-      setLength(newData.length);
-      setStatus(checkName);
-    } else {
-      setData(data);
-    }
-  };
-
+  const [addNewItem, setAddNewItem] = useState(false);
   const [newInvoiceItem, setNewInvoiceItem] = useState<DataType>({
     id: "",
     createdAt: "",
@@ -204,6 +215,37 @@ export default function GlobalContextProvider({
     items: [],
     total: 0,
   });
+  const [newListItem, setNewListItem] = useState<ListItemType>({
+    name: "",
+    quantity: 0,
+    price: 0,
+    total: 0,
+  });
+  const [newListItemArray, setNewListItemArray] = useState<ListItemType[]>([]);
+
+  console.log(editParams, 'editParams')
+
+  const calculatePaymentTerms = (createdAt: string, paymentDays: number) => {
+    setPaymentTerms(paymentDays);
+    const createdDate = new Date(createdAt);
+    const dueDate = new Date(createdDate);
+    dueDate.setDate(dueDate.getDate() + paymentDays);
+    const formattedDueDate = dueDate.toISOString().split("T")[0];
+    setPaymentDue(formattedDueDate);
+  };
+
+  let newData: DataType[];
+  const handleCheckBox = (checkName: string) => {
+    if (isChecked !== false) {
+      newData = datajson.filter((item) => item.status === `${checkName}`);
+      setData(newData);
+      setStatusDropdown(!statusDropdown);
+      setLength(newData.length);
+      setStatus(checkName);
+    } else {
+      setData(data);
+    }
+  };
 
   const addNewInvoice = (newInvoiceObj: DataType) => {
     const newDataObj = newInvoiceObj;
@@ -217,13 +259,63 @@ export default function GlobalContextProvider({
     setLength(deleteById.length);
   };
 
-  const editDataItems = (itemId: string) => {
-    setEditParams(itemId);
-    
+  const addNewListItem = (newItem: ListItemType) => {
+    setNewListItem(newItem);
+    setNewListItemArray([...newListItemArray, newItem]);
   };
 
 
 
+
+
+  const [editedNewDataEl, setEditedNewDataEl] = useState({});
+  // console.log(editedNewDataEl, "editedNewDataEl");
+
+  // const deleteItemsFromItemList = (elId: string, index: number) => {
+  //   const newDataEl = data.find((item) => item.id === elId);
+
+  //   const newItemArr = newDataEl?.items;
+
+  //   if (newItemArr) {
+  //     const editedNewItemArr = newItemArr.filter((el, i) => i !== index);
+  //     setEditedNewDataEl({ ...newDataEl, items: editedNewItemArr });
+  //   }
+
+  //   //  console.log( data.map(item => item.id === editedNewDataEl.id))
+  // };
+
+
+  const deleteItemsFromItemList = (elId: string, index: number) => {
+    const newData = data.map(item => {
+      if(item.id === elId) {
+        const updatedItems = item.items?.filter((el, i) => i !== index)
+        return { ...item, items: updatedItems };
+      }
+      return item;
+    })
+    setData(newData);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  const getEditParams = (itemId: string) => {
+    setEditParams(itemId);
+    setAddNewItem(true);
+  };
 
   const [randomID, setRandomID] = useState("");
   function generateRandomID() {
@@ -337,10 +429,19 @@ export default function GlobalContextProvider({
         deleteDataItems,
         setDeleteSectionOverlay,
         deleteSectionOverlay,
-        editDataItems,
+        addNewListItem,
         // setEditInvoice,
-        // editInvoice,
-        editParams
+        setEditParams,
+        editParams,
+        addNewItem,
+
+        getEditParams,
+        // setNewListItem,
+        newListItem,
+
+        newListItemArray,
+        setAddNewItem,
+        deleteItemsFromItemList,
       }}
     >
       <div

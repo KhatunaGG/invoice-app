@@ -8,7 +8,7 @@ const Header = () => {
   const context = useContext(GlobalContext)
   if(!context) return null
   const { isDesktop, newInvoicePage, editParams } = context;
-  console.log(editParams,   'editParams')
+
 
   return (
     <>
@@ -16,7 +16,6 @@ const Header = () => {
         className="w-full bg-[#373B53] h-[80px] md:h-[80px]  lg:w-[103px]     lg:h-[100vh]
    relative lg:rounded-tr-[29px] lg:rounded-br-[18px] lg:flex lg:items-end  z-50"
       >
-        {/* <div className="lg:h-full"> */}
         <img
           className="absolute top-0 legt-0 z-10 bg-transparent  w-[80px] h-[80px] lg:w-[103px] lg:h-[103px]"
           src="/assets/Group9.svg"
@@ -45,16 +44,10 @@ const Header = () => {
       </div>
 
       {newInvoicePage &&  <Form />}
-      {editParams && (
+      {/* {editParams && (
         <Form params={editParams} />
-      )}
+      )} */}
 
-
-
-
-
-      {/* <Form /> */}
-      {/* <DeleteSection /> */}
 
    
     </>

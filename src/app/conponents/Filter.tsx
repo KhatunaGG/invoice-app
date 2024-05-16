@@ -24,6 +24,8 @@ const Filter = () => {
     newInvoicePage,
     setNewInvoicePage,
     generateRandomID,
+    editParams,
+    setEditParams
   } = contex;
 
   return (
@@ -134,6 +136,11 @@ const Filter = () => {
           onClick={() => {
             setNewInvoicePage(!newInvoicePage);
             generateRandomID();
+
+
+
+            setEditParams('')
+            
           }}
           className="flex flex-row items-center gap-x-2 md:gap-x-4 bg-[#7C5DFA] py-[6px] pl-[6px] pr-[15px] md:py-2 md:pl-[8px] md:pr-[17px] rounded-full"
         >
@@ -150,3 +157,4 @@ const Filter = () => {
 };
 
 export default Filter;
+
