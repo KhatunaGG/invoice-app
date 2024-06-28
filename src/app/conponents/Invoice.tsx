@@ -6,21 +6,13 @@ import Link from "next/link";
 const Invoice = () => {
   const context = useContext(GlobalContext);
   if (!context) return null;
-  const { data, showInvoice, setShowInvoice, setDeleteSectionOverlay, deleteSectionOverlay } = context;
+  const { data } = context;
 
   return (
-    <div className="w-full h-full flex flex-col  gap-y-4 md:mb-8 ">
+    <div className="w-full h-full flex flex-col  gap-y-4 lg:mb-8">
       {data.map((item, i) => (
         <Link href={`/pages/${item.id}`} key={i}>
-          <div
-
-
-          onClick={() => setDeleteSectionOverlay(false)}
-
-
-
-            
-            className="w-full py-[25px] flex flex-row items-center bg-white rounded-[8px] px-8 md:py-4 lg:py-4 shadow-lg"
+          <div key={i} className="w-full py-[25px] flex flex-row items-center bg-white rounded-[8px] px-8 md:py-4 lg:py-4 shadow-lg"
           >
             <div className="w-[50%] md:w-[10%] lg:w-[10%] flex flex-col justify-between">
               <p className="font-bold text-[15px] leading-[1] tracking-[-0.25px] text-black mb-6 md:mb-0 lg:mb-0">
@@ -33,7 +25,7 @@ const Invoice = () => {
                 <span className="text-[#888EB0]">Due </span> {item.paymentDue}
               </p>
               <p className="md:hidden lg:hidden md:ml-10 font-bold tracking-[1.6] leading-[-0.25px]">
-                £ 1,800.90
+                £ {item.total}
               </p>
             </div>
 
@@ -99,10 +91,7 @@ const Invoice = () => {
             </div>
 
             <div className="w-[2%]  hidden md:flex lg:flex md:justify-end lg:justify-end">
-              <button
-                onClick={() => setShowInvoice(!showInvoice)}
-                className="h-[9px] w-[5px] bg-transparent "
-              >
+              <button className="h-[9px] w-[5px] bg-transparent ">
                 <img
                   className="font-extrabold"
                   src="/assets/icon-arrow-right.svg"

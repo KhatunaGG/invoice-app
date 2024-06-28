@@ -1,33 +1,30 @@
 "use client";
 import React, { useContext } from "react";
-import { GlobalContext, ListItemType } from "../Context";
+import { GlobalContext} from "../Context";
+import { ItemSectionPropsType } from "../interfaces";
 
-type ItemListPropsType = {
-  el?: ListItemType;
-  index?: number;
-}
 
-const ItemList = ({el, index}: ItemListPropsType) => {
+const ItemSection = ({ el }: ItemSectionPropsType) => {
   const contex = useContext(GlobalContext);
   if (!contex) return null;
-
   const {
-    setItemName,
-    error,
-    itemName,
-    setItemQty,
-    itemQty,
-    setItemPrice,
-    itemPrice,
-    totalPrice,
-    setTotalPrice,
     editParams,
-    deleteItemsFromItemList
+    setItemName,
+    setItemQty,
+    setItemPrice,
+    setTotalPrice,
+    itemQty,
+    itemPrice,
+    itemName,
+    error,
+    totalPrice
   } = contex;
 
 
   return (
-    <div className="w-full flex flex-col items-center md:flex-row  gap-2 mb-[49px]">
+    <div
+      className={`w-full flex flex-col items-center md:flex-row  gap-2 mb-[49px]`}
+    >
       <div className="relative w-full flex flex-col gap-y-[15px]       md:w-[41%]">
         <label
           className="font-medium text-[13px] leading-[1.15] traking-[-0.1px] text-[#7E88C3]"
@@ -37,7 +34,7 @@ const ItemList = ({el, index}: ItemListPropsType) => {
         </label>
         <input
           onChange={(e) => setItemName(e.target.value)}
-          defaultValue={editParams ? el?.name : ''}
+          defaultValue={editParams ? el?.name : ""}
           className="border border-[#DFE3FA] rounded-[4px] pl-[20px] pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000] h-[52px] outline-none"
         />
         {error && itemName.length === 0 ? (
@@ -60,7 +57,7 @@ const ItemList = ({el, index}: ItemListPropsType) => {
             </label>
             <input
               onChange={(e) => setItemQty(Number(e.target.value))}
-              defaultValue={editParams ? el?.quantity : ''}
+              defaultValue={editParams ? el?.quantity : ""}
               style={{
                 border: error && itemQty === 0 ? "1px solid red" : "",
               }}
@@ -77,10 +74,10 @@ const ItemList = ({el, index}: ItemListPropsType) => {
             </label>
             <input
               onChange={(e) => setItemPrice(Number(e.target.value))}
-              defaultValue={editParams ? el?.price : ''}
-              style={{
-                border: error && itemPrice === 0 ? "1px solid red" : "",
-              }}
+              defaultValue={editParams ? el?.price : ""}
+                style={{
+                  border: error && itemPrice === 0 ? "1px solid red" : "",
+                }}
               className=" border border-[#DFE3FA] rounded-[4px] text-right pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000] h-[52px]  outline-none"
             />
           </div>
@@ -94,18 +91,17 @@ const ItemList = ({el, index}: ItemListPropsType) => {
             </label>
             <input
               onChange={() => setTotalPrice(itemQty * itemPrice)}
-              // onChange={() => setTotalPrice(itemQty * itemPrice)}
-              defaultValue={editParams ? el?.total : ''}
-              style={{
-                border: error && totalPrice === 0 ? "1px solid red" : "",
-              }}
+              defaultValue={editParams ? el?.total : ""}
+                style={{
+                  border:
+                    error && totalPrice === 0 ? "1px solid red" : "",
+                }}
               className="border border-[#DFE3FA] rounded-[4px] text-right pt-[18px] pb-[15px] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#000000] h-[52px] outline-none"
             />
           </div>
-
           <div
-          onClick={() => deleteItemsFromItemList(editParams, Number(index))}
-          className="w-[19.57%] flex self-center justify-end mt-8  md:max-w-[22%]">
+            className="w-[19.57%] flex self-center justify-end mt-8  md:max-w-[22%]"
+          >
             <img
               className="w-[12.44px] h-[16px]"
               src="/assets/icon-delete.svg"
@@ -118,4 +114,4 @@ const ItemList = ({el, index}: ItemListPropsType) => {
   );
 };
 
-export default ItemList;
+export default ItemSection;

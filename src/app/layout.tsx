@@ -25,8 +25,6 @@ export default function RootLayout({
         <GlobalContextProvider>
           {children}
         </GlobalContextProvider>
-
-        {/* <GlobalContextProvider>{children}</GlobalContextProvider> */}
       </body>
     </html>
   );

@@ -1,17 +1,16 @@
 'use client'
 import React, { useContext } from "react";
 import Form from "./Form";
-import DeleteSection from "./DeleteSection";
 import { GlobalContext } from "../Context";
 
 const Header = () => {
   const context = useContext(GlobalContext)
   if(!context) return null
-  const { isDesktop, newInvoicePage, editParams } = context;
-
+  const { newInvoicePage } = context;
 
   return (
     <>
+    {newInvoicePage && <Form />}
       <div
         className="w-full bg-[#373B53] h-[80px] md:h-[80px]  lg:w-[103px]     lg:h-[100vh]
    relative lg:rounded-tr-[29px] lg:rounded-br-[18px] lg:flex lg:items-end  z-50"
@@ -21,11 +20,8 @@ const Header = () => {
           src="/assets/Group9.svg"
           alt=""
         />
-
         <div className="w-full h-full flex items-center justify-end  lg:h-full lg:w-full lg:items-end ">
           <div className="flex  items-center h-full lg:h-auto lg:w-full flex-row lg:flex-col lg:justify-between  ">
-
-
             <img
               className="w-[19.99px] h-[19.99px] mr-6 lg:mr-0 lg:mt-6"
               src="/assets/icon-moon.svg"
@@ -39,17 +35,7 @@ const Header = () => {
             />
           </div>
         </div>
-
-
       </div>
-
-      {newInvoicePage &&  <Form />}
-      {/* {editParams && (
-        <Form params={editParams} />
-      )} */}
-
-
-   
     </>
   );
 };

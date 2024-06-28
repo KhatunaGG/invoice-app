@@ -1,39 +1,62 @@
 "use client";
 import React, { useContext } from "react";
 import { GlobalContext } from "../Context";
-import { ParamsPropsType } from "../pages/[id]/page";
 import Link from "next/link";
 import DeleteSection from "./DeleteSection";
-import Form from "./Form";
+import { DataType, ParamsPropsType } from "../interfaces";
 
 const Details = ({ params }: ParamsPropsType) => {
   const context = useContext(GlobalContext);
   if (!context) return null;
   const {
-    setShowInvoice,
-    showInvoice,
     data,
     markAsPaid,
     setMarkAsPaid,
     setData,
-    deleteDataItems,
-    setDeleteSectionOverlay,
-    deleteSectionOverlay,
-    addNewListItem,
     setNewInvoicePage,
     newInvoicePage,
-    getEditParams
+    setEditParams,
+    setClientName,
+    setCreatedAt,
+    setClientEmail,
+    setClientStreet,
+    setClientCity,
+    setClientCountry,
+    setClientPostCode,
+    setPaymentDue,
+    setStatus,
+    setTotal,
+    setTotalPrice,
+    setProjectDesc,
+    setNewItemArr,
+    setDeleteSectionOverlay,
+    deleteSectionOverlay,
   } = context;
 
   const paramsData = data.filter((item) => item.id === params.id);
 
+  if (paramsData.length === 0) return;
+  const handleEdit = () => {
+    const invoice: DataType = paramsData[0];
+    setClientName(invoice.clientName);
+    setCreatedAt(invoice.createdAt);
+    setClientEmail(invoice.clientEmail);
+    setClientStreet(invoice.clientAddress.street);
+    setClientCity(invoice.clientAddress.city);
+    setClientCountry(invoice.clientAddress.country);
+    setClientPostCode(invoice.clientAddress.postCode);
+    setPaymentDue(invoice.paymentDue);
+    setStatus(invoice.status);
+    setTotal(invoice.total);
+    setProjectDesc(invoice.description);
+    setTotalPrice(invoice.total);
+  };
 
   return (
     <div className="w-full lg:w-[calc(100%-103px)] h-full flex flex-col items-center bg-[#F8F8FB] md:mb-[136px] lg:mb-[136px]">
       <div className="w-[87.2%] md:w-[87.5%] lg:w-[50.69%] lg:min-w-[730px] flex flex-col items-center justify-center pb-[56px] pt-[49px] md:pb-0 ">
         <div className="w-full flex flex-row gap-[23.66px] items-center mb-[31px]">
           <img
-          onClick={() => setData(data)}
             className="w-[8.46px]"
             src="/assets/icon-arrow-left.svg"
             alt=""
@@ -56,7 +79,7 @@ const Details = ({ params }: ParamsPropsType) => {
                 <button
                   style={{
                     backgroundColor:
-                    el.status === "paid"
+                      el.status === "paid"
                         ? "#33d6a042"
                         : el.status === "pending"
                         ? "#ff910032"
@@ -67,7 +90,7 @@ const Details = ({ params }: ParamsPropsType) => {
                   <span
                     style={{
                       backgroundColor:
-                      el.status === "paid"
+                        el.status === "paid"
                           ? "#33D69F"
                           : el.status === "pending"
                           ? "#FF8F00"
@@ -79,7 +102,7 @@ const Details = ({ params }: ParamsPropsType) => {
                   <span
                     style={{
                       color:
-                      el.status === "paid"
+                        el.status === "paid"
                           ? "#33D69F"
                           : el.status === "pending"
                           ? "#FF8F00"
@@ -92,37 +115,36 @@ const Details = ({ params }: ParamsPropsType) => {
                 </button>
               </div>
 
-
-
               <div className="hidden md:w-full lg:w-full md:flex lg:flex md:flex-row md:items-center md:gap-2 ">
                 <button
-                onClick={() => {
-                  setNewInvoicePage(!newInvoicePage);
-                  getEditParams(params.id)
-
-                }}
-                className="bg-[#F9FAFE] pt-[18px] pb-[15px] px-[23.5px] rounded-[50px] text-[#7E88C3] font-bold text-[15px] leading-[1] tracking-[-0.25px]">
+                  onClick={() => {
+                    setNewInvoicePage(!newInvoicePage);
+                    setEditParams(params.id);
+                    handleEdit();
+                    setNewItemArr([]);
+                  }}
+                  className="bg-[#F9FAFE] pt-[18px] pb-[15px] px-[23.5px] rounded-[50px] text-[#7E88C3] font-bold text-[15px] leading-[1] tracking-[-0.25px]"
+                >
                   Edit
                 </button>
-
                 <button
                   onClick={() => setDeleteSectionOverlay(!deleteSectionOverlay)}
-                  className="bg-[#EC5757] pt-[18px] pb-[15px] px-[24.5px] rounded-[50px] text-white font-bold text-[15px] leading-[1] tracking-[-0.25px]"
+                  className={`bg-[#EC5757] pt-[18px] pb-[15px] px-[24.5px] rounded-[50px] text-white font-bold text-[15px] leading-[1] tracking-[-0.25px] transition-background-color duration-300 hover:bg-[#FF9797]`}
                 >
                   Delete
                 </button>
-                {deleteSectionOverlay && params ? <DeleteSection params={params} /> : ''}
+
+                {deleteSectionOverlay && params ? (
+                  <DeleteSection params={params} />
+                ) : (
+                  ""
+                )}
 
                 <button
                   onClick={() => {
-                    if (
-                      el.status === "pending" ||
-                      el.status === "draft"
-                    ) {
+                    if (el.status === "pending" || el.status === "draft") {
                       setMarkAsPaid(!markAsPaid);
-                      const index = data.findIndex(
-                        (item) => item.id === el.id
-                      );
+                      const index = data.findIndex((item) => item.id === el.id);
                       if (index !== -1) {
                         const newData = [...data];
                         newData[index] = { ...newData[index], status: "paid" };
@@ -130,7 +152,7 @@ const Details = ({ params }: ParamsPropsType) => {
                       }
                     }
                   }}
-                  className="bg-[#7C5DFA] pt-[18px] pb-[15px] px-[23.5px] rounded-[50px] text-white font-bold text-[15px] leading-[1] tracking-[-0.25px] whitespace-nowrap "
+                  className="bg-[#7C5DFA] pt-[18px] pb-[15px] px-[23.5px] rounded-[50px] text-white font-bold text-[15px] leading-[1] tracking-[-0.25px] whitespace-nowrap transition-background-color duration-300 hover:bg-[#9277FF] "
                 >
                   Mark as Paid
                 </button>
@@ -251,27 +273,29 @@ const Details = ({ params }: ParamsPropsType) => {
                     >
                       <div className="w-full flex-col flex md:flex-row md:items-center justify-between  md:w-[75%]">
                         <p className="font-bold text-[15px] leading-[1.33] tracking-[-0.25px] text-black md:w-[64%]">
-                          {item.name}
+                          {item?.name}
                         </p>
                         <div className="flex flex-row items-end justify-between md:w-[45%] ">
-                          <p className="hidden font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#7E88C3] md:w-[20%]  md:flex justify-end">
-                            {item.quantity}
+                          <p className="hidden  font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#7E88C3] md:w-[20%]  md:flex justify-end">
+                            {item?.quantity}
                           </p>
                           <p className="font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#7E88C3] md:w-[60%] flex justify-end">
-                            <span className="md:hidden">{item.quantity} x</span>
-                            <span className="ml-[3px] md:ml-0">
+                            <span className="md:hidden">
+                              {item?.quantity} x
+                            </span>
+                            <span className="ml-[3px] md:ml-0 text-[blue]">
                               {" "}
                               £{" "}
-                              {typeof item.price === "number"
-                                ? item.price.toFixed(2)
-                                : item.price}
+                              {typeof item?.price === "number"
+                                ? item?.price.toFixed(2)
+                                : item?.price}
                             </span>
                           </p>
                         </div>
                       </div>
-                      <p className="w-[50%] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#7E88C3] flex justify-end  md:w-[25%]">
+                      <p className=" w-[50%] font-bold text-[15px] leading-[1] tracking-[-0.25px] text-[#7E88C3] flex justify-end  md:w-[25%]">
                         £{" "}
-                        {(Number(item.quantity) * Number(item.price)).toFixed(
+                        {(Number(item?.quantity) * Number(item?.price)).toFixed(
                           2
                         )}
                       </p>
@@ -293,15 +317,17 @@ const Details = ({ params }: ParamsPropsType) => {
         ))}
       </div>
 
-      <div className="mx-auto bg-white w-full py-[22px] flex md:hidden lg:hidden flex-row items-center justify-center gap-2  ">
+      <div className="mx-auto bg-white w-full py-[22px] flex md:hidden lg:hidden flex-row items-center justify-center gap-2 ">
         <div>
           <button className="bg-[#F9FAFE] pt-[18px] pb-[15px] px-[23.5px] rounded-[50px] text-[#7E88C3] font-bold text-[15px] leading-[1] tracking-[-0.25px]">
             Edit
           </button>
+
           <button className="bg-[#EC5757] pt-[18px] pb-[15px] px-[24.5px] rounded-[50px] text-white font-bold text-[15px] leading-[1] tracking-[-0.25px]">
             Delete
           </button>
-          <button className="bg-[#7C5DFA] pt-[18px] pb-[15px] px-[23.5px] rounded-[50px] text-white font-bold text-[15px] leading-[1] tracking-[-0.25px] whitespace-nowrap ml-2">
+
+          <button className="bg-[#7C5DFA] pt-[18px] pb-[15px] px-[23.5px] rounded-[50px] text-white font-bold text-[15px] leading-[1] tracking-[-0.25px] whitespace-nowrap ml-2 transition-background-color duration-300 hover:bg-[#9277FF]">
             Mark as Paid
           </button>
         </div>

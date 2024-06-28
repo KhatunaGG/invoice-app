@@ -1,154 +1,15 @@
 "use client";
-import React, { ReactNode, createContext, useEffect, useState } from "react";
+import React, {
+  ReactNode,
+  createContext,
+  useEffect,
+  useState,
+} from "react";
 import datajson from "./data.json";
 import Header from "./conponents/Header";
-
-export type ListItemType = {
-  name?: string;
-  quantity?: number;
-  price?: number;
-  total?: number;
-};
+import { DataType, GlobalContextType, ItemType } from "./interfaces";
 
 
-
-export type GlobalContextType = {
-  isDesktop: boolean;
-  isTablet: boolean;
-  isMobile: boolean;
-  data: DataType[];
-  status: string;
-  setStatus: React.Dispatch<React.SetStateAction<string>>;
-  setStatusDropdown: React.Dispatch<React.SetStateAction<boolean>>;
-  statusDropdown: boolean;
-  checkBox: number;
-  setCheckBox: React.Dispatch<React.SetStateAction<number>>;
-  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
-  isChecked: Boolean;
-  handleCheckBox: (value: string) => void;
-  filtredData: DataType[];
-  showInvoice: boolean;
-  setShowInvoice: React.Dispatch<React.SetStateAction<boolean>>;
-  length: Number;
-  setLength: React.Dispatch<React.SetStateAction<number>>;
-  setData: React.Dispatch<React.SetStateAction<DataType[]>>;
-  newInvoicePage: boolean;
-  setNewInvoicePage: React.Dispatch<React.SetStateAction<boolean>>;
-  setClientName: React.Dispatch<React.SetStateAction<string>>;
-  setClientEmail: (value: React.SetStateAction<string>) => void;
-  setClientStreet: React.Dispatch<React.SetStateAction<string>>;
-  setClientCity: React.Dispatch<React.SetStateAction<string>>;
-  setClientPostCode: React.Dispatch<React.SetStateAction<string>>;
-  setClientCountry: React.Dispatch<React.SetStateAction<string>>;
-  setCreatedAt: React.Dispatch<React.SetStateAction<string>>;
-  setPaymentTermsDropDown: React.Dispatch<React.SetStateAction<boolean>>;
-  paymentTermsDropDown: boolean;
-  setHandlePaymentTerm: React.Dispatch<React.SetStateAction<string>>;
-  handlePaymentTerm: string;
-  setProjectDesc: React.Dispatch<React.SetStateAction<string>>;
-  setItemName: React.Dispatch<React.SetStateAction<string>>;
-  setItemPrice: React.Dispatch<React.SetStateAction<number>>;
-  setItemQty: React.Dispatch<React.SetStateAction<number>>;
-  setTotal: React.Dispatch<React.SetStateAction<number>>;
-  setTotalPrice: React.Dispatch<React.SetStateAction<number>>;
-  generateRandomID: () => void;
-  randomID: string;
-  clientCity: string;
-  addNewInvoice: (value: DataType) => void;
-  createdAt: string;
-  projectDesc: string;
-  clientName: string;
-  clientEmail: string;
-  clientStreet: string;
-  clientPostCode: string;
-  clientCountry: string;
-  totalPrice: number;
-  itemName: string;
-  itemPrice: number;
-  itemQty: number;
-  newInvoiceItem: DataType;
-  setNewInvoiceItem: React.Dispatch<React.SetStateAction<DataType>>;
-  markAsPaid: boolean;
-  setMarkAsPaid: React.Dispatch<React.SetStateAction<boolean>>;
-  setError: React.Dispatch<React.SetStateAction<boolean>>;
-  error: boolean;
-  calculatePaymentTerms: (createdAt: string, paymentDays: number) => void;
-  paymentTerms: number;
-  paymentDue: string;
-  deleteDataItems: (value: string) => void;
-  setDeleteSectionOverlay: React.Dispatch<React.SetStateAction<boolean>>;
-  deleteSectionOverlay: boolean;
-  editParams: string;
-  setEditParams: React.Dispatch<React.SetStateAction<string>>;
-  addNewItem: boolean;
-  getEditParams: (value: string) => void;
-
-  addNewListItem: (newItem: ListItemType) => void;
-  newListItem: ListItemType;
-
-  newListItemArray: ListItemType[];
-
-  setAddNewItem: React.Dispatch<React.SetStateAction<boolean>>;
-  deleteItemsFromItemList: (value: string, index: number) => void;
-};
-
-export type DataType = {
-  id: string;
-  createdAt: string;
-  paymentDue: string;
-  description: string;
-  paymentTerms: number;
-  clientName: string;
-  clientEmail: string;
-  status: string;
-  senderAddress: {
-    street: string;
-    city: string;
-    postCode: string;
-    country: string;
-  };
-  clientAddress: {
-    street: string;
-    city: string;
-    postCode: string;
-    country: string;
-  };
-  items?: {
-    name?: string;
-    quantity?: number;
-    price?: number;
-    total?: number;
-  }[];
-
-  total: number;
-};
-
-
-
-// export type DataType = {
-//   id: string;
-//   createdAt: string;
-//   paymentDue: string;
-//   description: string;
-//   paymentTerms: number;
-//   clientName: string;
-//   clientEmail: string;
-//   status: string;
-//   senderAddress: {
-//     street: string;
-//     city: string;
-//     postCode: string;
-//     country: string;
-//   };
-//   clientAddress: {
-//     street: string;
-//     city: string;
-//     postCode: string;
-//     country: string;
-//   };
-//   items?: ListItemType[]; 
-//   total: number;
-// };
 
 export const GlobalContext = createContext<GlobalContextType | null>(null);
 
@@ -161,14 +22,14 @@ export default function GlobalContextProvider({
   const [isDesktop, setIsDesktop] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [statusDropdown, setStatusDropdown] = useState(false);
-  const [status, setStatus] = useState("");
-  const [checkBox, setCheckBox] = useState(0);
-  const [isChecked, setIsChecked] = useState(false);
-  const [filtredData, setFilterdData] = useState<DataType[]>([]);
-  const [showInvoice, setShowInvoice] = useState(false);
+  const [markAsPaid, setMarkAsPaid] = useState(false);
   const [newInvoicePage, setNewInvoicePage] = useState(false);
-  const [length, setLength] = useState(data.length);
+  const [editParams, setEditParams] = useState("");
+  const [itemName, setItemName] = useState("");
+  const [itemPrice, setItemPrice] = useState(0);
+  const [itemQty, setItemQty] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(itemQty * total);
   const [clientName, setClientName] = useState("");
   const [clientEmail, setClientEmail] = useState("");
   const [clientStreet, setClientStreet] = useState("");
@@ -177,62 +38,39 @@ export default function GlobalContextProvider({
   const [clientCountry, setClientCountry] = useState("");
   const [createdAt, setCreatedAt] = useState("");
   const [paymentTermsDropDown, setPaymentTermsDropDown] = useState(false);
-  const [handlePaymentTerm, setHandlePaymentTerm] = useState("Net 30 Days");
-  const [projectDesc, setProjectDesc] = useState("");
-  const [itemName, setItemName] = useState("");
-  const [itemPrice, setItemPrice] = useState(0);
-  const [itemQty, setItemQty] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [markAsPaid, setMarkAsPaid] = useState(false);
-  const [paymentTerms, setPaymentTerms] = useState(30);
+  const [randomID, setRandomID] = useState("");
   const [paymentDue, setPaymentDue] = useState("");
-  const [error, setError] = useState(false);
+  const [projectDesc, setProjectDesc] = useState("");
+  const [handlePaymentTerm, setHandlePaymentTerm] = useState("Net 30 Days");
+  const [paymentTerms, setPaymentTerms] = useState(30);
+  const [status, setStatus] = useState("");
+  const [updatedDataEl, setUpdatedDataEl] = useState<DataType>();
+  const [length, setLength] = useState(data.length);
   const [deleteSectionOverlay, setDeleteSectionOverlay] = useState(false);
-  const [editParams, setEditParams] = useState("");
-  const [addNewItem, setAddNewItem] = useState(false);
-  const [newInvoiceItem, setNewInvoiceItem] = useState<DataType>({
-    id: "",
-    createdAt: "",
-    paymentDue: "",
-    description: "",
-    paymentTerms: 0,
-    clientName: "",
-    clientEmail: "",
-    status: "",
-    senderAddress: {
-      street: "",
-      city: "",
-      postCode: "",
-      country: "",
-    },
-    clientAddress: {
-      street: "",
-      city: "",
-      postCode: "",
-      country: "",
-    },
-    items: [],
-    total: 0,
-  });
-  const [newListItem, setNewListItem] = useState<ListItemType>({
-    name: "",
-    quantity: 0,
-    price: 0,
-    total: 0,
-  });
-  const [newListItemArray, setNewListItemArray] = useState<ListItemType[]>([]);
+  const [statusDropdown, setStatusDropdown] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [checkBox, setCheckBox] = useState(0);
+  const [newArr, setNewArr] = useState<ItemType[]>([]);
+  const [error, setError] = useState(false);
+  const [newItemArr, setNewItemArr] = useState<ItemType[]>([]);
+  const [item, setItem] = useState<ItemType>({});
 
-  console.log(editParams, 'editParams')
 
-  const calculatePaymentTerms = (createdAt: string, paymentDays: number) => {
-    setPaymentTerms(paymentDays);
-    const createdDate = new Date(createdAt);
-    const dueDate = new Date(createdDate);
-    dueDate.setDate(dueDate.getDate() + paymentDays);
-    const formattedDueDate = dueDate.toISOString().split("T")[0];
-    setPaymentDue(formattedDueDate);
-  };
+
+  useEffect(() => {
+    const newArrItem = data
+      .filter((item) => item.id === editParams)
+      .find((el) => el.items !== undefined)?.items;
+
+    if (newArrItem) {
+      setNewArr(newArrItem);
+    }
+  }, [editParams]);
+
+  useEffect(() => {
+    setLength(data.length);
+  }, [data.length]);
+
 
   let newData: DataType[];
   const handleCheckBox = (checkName: string) => {
@@ -247,10 +85,162 @@ export default function GlobalContextProvider({
     }
   };
 
+
+  const createNewItems = (params: string) => {
+    if (!itemName && !itemQty && !itemPrice && !total) {
+      setNewItemArr([
+        ...newItemArr,
+        { name: "", quantity: 0, price: 0, total: 0 },
+      ]);
+    } else {
+      setNewItemArr([
+        ...newItemArr,
+        {
+          name: itemName,
+          quantity: itemQty,
+          price: itemPrice,
+          total: itemQty * itemPrice,
+        },
+      ]);
+    }
+  };
+
   const addNewInvoice = (newInvoiceObj: DataType) => {
     const newDataObj = newInvoiceObj;
     setData([...data, newDataObj]);
   };
+
+  let newItemInInvoiceObj: ItemType;
+  const editExistingInvoice = (params: string) => {
+    setEditParams(params);
+    if (params) {
+      const existingInvoiceIndex = data.findIndex((el) => el.id === params);
+      if (existingInvoiceIndex !== -1) {
+        const existingInvoice = data[existingInvoiceIndex];
+        if (itemName && itemQty && itemPrice) {
+          newItemInInvoiceObj = {
+            name: itemName,
+            quantity: itemQty,
+            price: itemPrice,
+            total: itemQty * itemPrice,
+          };
+        }
+        const updatedItems = [
+          ...(existingInvoice.items || []),
+          ...(newItemArr.slice(1) || []),
+          newItemInInvoiceObj,
+        ];
+        let elTotal;
+        if (newItemArr) {
+          elTotal = newItemArr.reduce(
+            (acc, item) => acc + Number(item.total),
+            0
+          );
+        }
+
+        const newInvoiceObj: DataType = {
+          ...existingInvoice,
+          id: params,
+          createdAt,
+          paymentDue,
+          description: projectDesc,
+          paymentTerms,
+          clientName,
+          clientEmail,
+          status: "pending",
+          senderAddress: {
+            street: "19 Union Terrace",
+            city: "London",
+            postCode: "E1 3EZ",
+            country: "United Kingdom",
+          },
+          clientAddress: {
+            street: clientStreet,
+            city: clientCity,
+            postCode: clientPostCode,
+            country: clientCountry,
+          },
+          items: updatedItems,
+          total: total + Number(elTotal),
+        };
+
+        const updatedData = [...data];
+        updatedData[existingInvoiceIndex] = newInvoiceObj;
+        setUpdatedDataEl(newInvoiceObj);
+        setData(updatedData);
+      }
+    }
+  };
+
+
+
+
+  console.log(error, 'error')
+  const createNewInvoice = () => {
+    if (
+      createdAt &&
+      handlePaymentTerm &&
+      projectDesc &&
+      clientName &&
+      clientEmail &&
+      clientStreet &&
+      clientCity &&
+      clientPostCode &&
+      clientCountry &&
+      itemName &&
+      itemQty &&
+      itemPrice &&
+      totalPrice
+    ) {
+      const newItemInInvoiceObj = {
+        name: itemName,
+        quantity: itemQty,
+        price: itemPrice,
+        total: itemQty * itemPrice,
+      };
+
+      let arrTotal = 0;
+      if (newItemArr) {
+        newItemArr.forEach((el) => {
+          arrTotal += Number(el.quantity) * Number(el.price);
+        });
+      }
+
+      let newInvoiceObj = {
+        id: randomID,
+        createdAt: createdAt,
+        paymentDue: paymentDue,
+        description: projectDesc,
+        paymentTerms: paymentTerms,
+        clientName: clientName,
+        clientEmail: clientEmail,
+        status: "pending",
+        senderAddress: {
+          street: "19 Union Terrace",
+          city: "London",
+          postCode: "E1 3EZ",
+          country: "United Kingdom",
+        },
+        clientAddress: {
+          street: clientStreet,
+          city: clientCity,
+          postCode: clientPostCode,
+          country: clientCountry,
+        },
+        items: [...newItemArr.slice(1), newItemInInvoiceObj],
+        total: arrTotal + newItemInInvoiceObj.total,
+      };
+
+      if (updatedDataEl) {
+        for (let key in newInvoiceObj) {
+          setError(!error)
+          console.log(key, 'key')
+        }
+      }
+      setData((prevData) => [...prevData, newInvoiceObj]);
+    }
+  };
+
 
   const deleteDataItems = (itemId: string) => {
     console.log(itemId, ">>>itemId");
@@ -259,65 +249,8 @@ export default function GlobalContextProvider({
     setLength(deleteById.length);
   };
 
-  const addNewListItem = (newItem: ListItemType) => {
-    setNewListItem(newItem);
-    setNewListItemArray([...newListItemArray, newItem]);
-  };
 
 
-
-
-
-  const [editedNewDataEl, setEditedNewDataEl] = useState({});
-  // console.log(editedNewDataEl, "editedNewDataEl");
-
-  // const deleteItemsFromItemList = (elId: string, index: number) => {
-  //   const newDataEl = data.find((item) => item.id === elId);
-
-  //   const newItemArr = newDataEl?.items;
-
-  //   if (newItemArr) {
-  //     const editedNewItemArr = newItemArr.filter((el, i) => i !== index);
-  //     setEditedNewDataEl({ ...newDataEl, items: editedNewItemArr });
-  //   }
-
-  //   //  console.log( data.map(item => item.id === editedNewDataEl.id))
-  // };
-
-
-  const deleteItemsFromItemList = (elId: string, index: number) => {
-    const newData = data.map(item => {
-      if(item.id === elId) {
-        const updatedItems = item.items?.filter((el, i) => i !== index)
-        return { ...item, items: updatedItems };
-      }
-      return item;
-    })
-    setData(newData);
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  const getEditParams = (itemId: string) => {
-    setEditParams(itemId);
-    setAddNewItem(true);
-  };
-
-  const [randomID, setRandomID] = useState("");
   function generateRandomID() {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let randomStr = "";
@@ -329,6 +262,15 @@ export default function GlobalContextProvider({
     }
     setRandomID(randomStr);
   }
+
+  const calculatePaymentTerms = (createdAt: string, paymentDays: number) => {
+    setPaymentTerms(paymentDays);
+    const createdDate = new Date(createdAt);
+    const dueDate = new Date(createdDate);
+    dueDate.setDate(dueDate.getDate() + paymentDays);
+    const formattedDueDate = dueDate.toISOString().split("T")[0];
+    setPaymentDue(formattedDueDate);
+  };
 
   const checkWindowSize = () => {
     const windowWidth = window.innerWidth;
@@ -367,81 +309,71 @@ export default function GlobalContextProvider({
         isTablet,
         isMobile,
         data,
-        status,
-        setStatus,
-        setStatusDropdown,
-        statusDropdown,
-        setCheckBox,
-        checkBox,
-        setIsChecked,
-        isChecked,
-        handleCheckBox,
-        filtredData,
-        showInvoice,
-        setShowInvoice,
-        length,
-        setLength,
         setData,
+        markAsPaid,
+        setMarkAsPaid,
         newInvoicePage,
         setNewInvoicePage,
-        setClientName,
-        setClientEmail,
-        setClientStreet,
-        setClientCity,
-        setClientPostCode,
-        setClientCountry,
-        setCreatedAt,
-        setPaymentTermsDropDown,
-        paymentTermsDropDown,
-        setHandlePaymentTerm,
-        handlePaymentTerm,
-        setProjectDesc,
+        editParams,
+        setEditParams,
+        editExistingInvoice,
         setItemName,
         setItemPrice,
         setItemQty,
         setTotal,
         setTotalPrice,
-        generateRandomID,
-        randomID,
-        addNewInvoice,
-        createdAt,
-        projectDesc,
-        clientName,
-        clientEmail,
-        clientStreet,
-        clientCity,
-        clientPostCode,
-        clientCountry,
+        itemQty,
+        itemPrice,
         totalPrice,
         itemName,
-        itemPrice,
-        itemQty,
-        newInvoiceItem,
-        setNewInvoiceItem,
-        markAsPaid,
-        setMarkAsPaid,
-        setError,
-        error,
+        setClientName,
+        clientName,
+        setClientEmail,
+        clientEmail,
+        setClientStreet,
+        clientStreet,
+        setClientCity,
+        clientCity,
+        setClientPostCode,
+        clientPostCode,
+        setClientCountry,
+        clientCountry,
+        setCreatedAt,
+        createdAt,
+        setPaymentTermsDropDown,
+        paymentTermsDropDown,
+        createNewInvoice,
+        setProjectDesc,
+        setHandlePaymentTerm,
         calculatePaymentTerms,
-        paymentTerms,
-        paymentDue,
-
-        deleteDataItems,
+        generateRandomID,
+        projectDesc,
+        setPaymentDue,
+        setStatus,
+        length,
+        status,
+        setCheckBox,
+        checkBox,
+        statusDropdown,
+        isChecked,
+        setIsChecked,
+        handleCheckBox,
+        setStatusDropdown,
+        newArr,
+        createNewItems,
+        newItemArr,
+        handlePaymentTerm,
+        setNewItemArr,
         setDeleteSectionOverlay,
         deleteSectionOverlay,
-        addNewListItem,
-        // setEditInvoice,
-        setEditParams,
-        editParams,
-        addNewItem,
-
-        getEditParams,
-        // setNewListItem,
-        newListItem,
-
-        newListItemArray,
-        setAddNewItem,
-        deleteItemsFromItemList,
+        deleteDataItems,
+        randomID,
+        paymentDue,
+        paymentTerms,
+        setUpdatedDataEl,
+        addNewInvoice,
+        error,
+        setError,
       }}
     >
       <div
